@@ -4,22 +4,24 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Cấu hình thư mục chứa file tĩnh
-app.use(express.static(path.join(__dirname, "public")));
+// Kiểm tra nếu thư mục "public" tồn tại trước khi serve file tĩnh
+const publicPath = path.join(__dirname, "public");
+
+app.use(express.static(publicPath));
 
 // Route cho admin.html
 app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "admin.html"));
+  res.sendFile(path.join(publicPath, "admin.html"));
 });
 
 // Route cho client.html
 app.get("/client", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "client.html"));
+  res.sendFile(path.join(publicPath, "client.html"));
 });
 
-// Xử lý lỗi 404 (Không hiển thị lỗi nếu truy cập trang gốc "/")
+// Xử lý trang gốc "/" nếu không có index.html
 app.get("/", (req, res) => {
-  res.send("Welcome! No index.html file is needed.");
+  res.send("<h1>Welcome! No index.html file is needed.</h1>");
 });
 
 // Khởi động server
