@@ -1,0 +1,65 @@
+// client.html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client - Theo dõi thanh toán</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #progress-container { width: 50%; margin: auto; background: #ddd; border-radius: 10px; overflow: hidden; }
+        #progress-bar { height: 30px; width: 0%; background: green; text-align: center; color: white; line-height: 30px; }
+        #history-box { width: 50%; margin: auto; text-align: left; border: 1px solid #000; padding: 10px; background: #f9f9f9; height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h2>Theo dõi thanh toán</h2>
+    <div id="progress-container">
+        <div id="progress-bar">0%</div>
+    </div>
+    <h3>Lịch sử thanh toán</h3>
+    <div id="history-box"></div>
+    <h3>Yêu cầu thanh toán</h3>
+    <input type="number" id="request-amount" placeholder="Nhập số tiền" min="1">
+    <button onclick="requestPayment()">Nộp</button>
+    
+    <script>
+        let totalAmount = 11000000;
+        let paidAmount = 0;
+        let historyBox = document.getElementById('history-box');
+        let progressBar = document.getElementById('progress-bar');
+        
+        function updateProgress() {
+            let progress = (paidAmount / totalAmount) * 100;
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+            if (progress >= 100) {
+                progressBar.textContent = "Hoàn tất!";
+            }
+        }
+        
+        function requestPayment() {
+            let amount = parseInt(document.getElementById('request-amount').value);
+            if (!amount || amount <= 0) {
+                alert("Vui lòng nhập số tiền hợp lệ.");
+                return;
+            }
+            alert(`Yêu cầu thanh toán ${amount.toLocaleString()} VND đã được gửi.`);
+        }
+        
+        function loadHistory() {
+            let savedHistory = localStorage.getItem("paymentHistory");
+            let savedPaidAmount = localStorage.getItem("paidAmount");
+            if (savedHistory) {
+                historyBox.innerHTML = savedHistory.split('\n').map(entry => `<div>${entry}</div>`).join('');
+            }
+            if (savedPaidAmount) {
+                paidAmount = parseInt(savedPaidAmount);
+                updateProgress();
+            }
+        }
+        
+        window.onload = loadHistory;
+    </script>
+</body>
+</html>

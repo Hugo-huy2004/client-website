@@ -1,0 +1,65 @@
+// admin.html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản lý thanh toán</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #admin-history { width: 50%; margin: auto; text-align: left; }
+        textarea { width: 100%; height: 200px; border: 1px solid #000; padding: 10px; background: #f9f9f9; }
+        #update-payment { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Quản lý thanh toán</h2>
+    <div id="admin-history">
+        <h3>Lịch sử thanh toán</h3>
+        <textarea id="admin-history-box"></textarea>
+    </div>
+    <div id="update-payment">
+        <h3>Cập nhật thanh toán</h3>
+        <input type="number" id="admin-amount" placeholder="Nhập số tiền" min="1">
+        <button onclick="updatePayment(true)">Thêm</button>
+        <button onclick="updatePayment(false)">Giảm</button>
+        <button onclick="saveHistory()">Lưu</button>
+    </div>
+    
+    <script>
+        let totalAmount = 11000000;
+        let paidAmount = 0;
+        let historyBox = document.getElementById('admin-history-box');
+        
+        function updatePayment(isAdding) {
+            let amount = parseInt(document.getElementById('admin-amount').value);
+            if (!amount || amount <= 0) {
+                alert("Vui lòng nhập số tiền hợp lệ.");
+                return;
+            }
+            paidAmount = isAdding ? paidAmount + amount : paidAmount - amount;
+            paidAmount = Math.max(0, Math.min(paidAmount, totalAmount));
+            historyBox.value += `${new Date().toLocaleString()}: ${isAdding ? '+' : '-'}${amount.toLocaleString()} VND\n`;
+            localStorage.setItem("paymentHistory", historyBox.value);
+            localStorage.setItem("paidAmount", paidAmount);
+            alert("Cập nhật thành công!");
+        }
+        
+        function saveHistory() {
+            localStorage.setItem("paymentHistory", historyBox.value);
+            alert("Lịch sử đã được lưu!");
+        }
+        
+        window.onload = function() {
+            let savedHistory = localStorage.getItem("paymentHistory");
+            let savedPaidAmount = localStorage.getItem("paidAmount");
+            if (savedHistory) {
+                historyBox.value = savedHistory;
+            }
+            if (savedPaidAmount) {
+                paidAmount = parseInt(savedPaidAmount);
+            }
+        };
+    </script>
+</body>
+</html>
