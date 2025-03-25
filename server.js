@@ -17,9 +17,9 @@ app.get("/client", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "client.html"));
 });
 
-// Xử lý lỗi 404
-app.use((req, res) => {
-  res.status(404).send("Page not found!");
+// Xử lý lỗi 404 (Không hiển thị lỗi nếu truy cập trang gốc "/")
+app.get("/", (req, res) => {
+  res.send("Welcome! No index.html file is needed.");
 });
 
 // Khởi động server
